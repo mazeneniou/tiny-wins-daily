@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiny Wins Daily</title>
+    <style>
+        /* ============================================
+           RESET & BASE STYLES
+           ============================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", sans-serif;
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        /* Warm Neutral + Sage Green Palette */
+        :root {
+            --primary: #6B8F71;
+            --primary-hover: #5F8065;
+            --primary-light: #DDE8DF;
+            --primary-very-light: #F7F5F2;
+            --accent-gentle: #B9C9BE;
+            --accent-steady: #6B8F71;
+            --accent-brave: #5F8065;
+            --text-primary: #1F2933;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            --bg-soft: #FFFFFF;
+            --bg-card: #FFFFFF;
+            --bg-base: #F7F5F2;
+            --success: #6B8F71;
+            --border: #E5E7EB;
+            --border-focus: #6B8F71;
+        }
+
+        /* ============================================
+           WELCOME MESSAGE (QUIET RETURN ACK)
+           ============================================ */
+        .welcome-message {
+            display: none;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            opacity: 0;
+            animation: gentleWelcome 1.2s ease-out forwards;
+            letter-spacing: 0.3px;
+        }
+
+        .welcome-message.show {
+            display: block;
+        }
+
+        @keyframes gentleWelcome {
+            0% {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            100% {
+                opacity: 0.7;
+                transform: translateY(0);
+            }
+        }
+
+        /* ============================================
+           HEADER
+           ============================================ */
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: var(--primary);
+            margin-bottom: 8px;
+            font-family: 'Georgia', 'Garamond', serif;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+        }
+
+        .header p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-weight: 300;
+        }
+
+        .quote {
+            font-size: 1.2rem;
+            font-style: italic;
+            color: var(--primary);
+            font-weight: 300;
+            margin-top: 16px;
+            line-height: 1.7;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* ============================================
+           MAIN CONTAINER
+           ============================================ */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            flex: 1;
+            width: 100%;
+        }
+
+        /* ============================================
+           TODAY'S ACTION SECTION
+           ============================================ */
+        .action-section {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 60px 45px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+            box-shadow: 0 8px 20px rgba(107, 143, 113, 0.08), 0 2px 4px rgba(107, 143, 113, 0.04);
+            animation: slideUp 0.6s ease-out;
+            will-change: contents;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        }
+
+        .action-section:hover {
+            box-shadow: 0 12px 28px rgba(107, 143, 113, 0.12), 0 2px 8px rgba(107, 143, 113, 0.06);
+            transform: translateY(-2px);
+        }
+
+        /* Mood-specific background colors */
+        .action-section.mood-tired {
+            background: rgba(142, 184, 217, 0.08);
+            border-color: rgba(142, 184, 217, 0.2);
+        }
+
+        .action-section.mood-anxious {
+            background: rgba(184, 153, 104, 0.08);
+            border-color: rgba(184, 153, 104, 0.2);
+        }
+
+        .action-section.mood-flat {
+            background: rgba(168, 184, 147, 0.08);
+            border-color: rgba(168, 184, 147, 0.2);
+        }
+
+        .action-section.mood-okay {
+            background: rgba(125, 179, 176, 0.08);
+            border-color: rgba(125, 179, 176, 0.2);
+        }
+
+        .action-section.mood-motivated {
+            background: rgba(212, 165, 116, 0.08);
+            border-color: rgba(212, 165, 116, 0.2);
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 14px;
+            opacity: 1;
+        }
+
+        .action-mood {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 400;
+            margin-bottom: 20px;
+            text-transform: capitalize;
+            letter-spacing: 0.5px;
+            background-color: rgba(168, 141, 126, 0.15);
+            color: var(--primary);
+        }
+
+        .action-text {
+            font-size: 2rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            margin-bottom: 40px;
+            line-height: 1.7;
+            letter-spacing: 0.2px;
+            animation: textReveal 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 13px 26px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+            letter-spacing: 0.3px;
+            will-change: transform;
+        }
+
+        button:focus {
+            outline: 2px solid var(--border-focus);
+            outline-offset: 2px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 12px rgba(107, 143, 113, 0.15);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 12px 24px rgba(107, 143, 113, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: 0 2px 4px rgba(107, 143, 113, 0.15);
+        }
+
+        .btn-secondary {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(107, 143, 113, 0.08);
+        }
+
+        .btn-secondary:hover {
+            background-color: #CDE4CE;
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(107, 143, 113, 0.15);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0) scale(0.98);
+            box-shadow: none;
+        }
+
+        /* Mood-specific button colors */
+        .action-buttons.mood-tired .btn-primary {
+            background-color: #8eb8d9;
+        }
+        .action-buttons.mood-tired .btn-primary:hover {
+            background-color: #5a8bc4;
+            box-shadow: 0 8px 16px rgba(142, 184, 217, 0.35);
+        }
+        .action-buttons.mood-tired .btn-secondary {
+            background-color: rgba(142, 184, 217, 0.15);
+            color: #8eb8d9;
+        }
+        .action-buttons.mood-tired .btn-secondary:hover {
+            background-color: rgba(142, 184, 217, 0.25);
+        }
+
+        .action-buttons.mood-anxious .btn-primary {
+            background-color: #b89968;
+        }
+        .action-buttons.mood-anxious .btn-primary:hover {
+            background-color: #9d7d52;
+            box-shadow: 0 8px 16px rgba(184, 153, 104, 0.35);
+        }
+        .action-buttons.mood-anxious .btn-secondary {
+            background-color: rgba(184, 153, 104, 0.15);
+            color: #b89968;
+        }
+        .action-buttons.mood-anxious .btn-secondary:hover {
+            background-color: rgba(184, 153, 104, 0.25);
+        }
+
+        .action-buttons.mood-flat .btn-primary {
+            background-color: #a8b893;
+        }
+        .action-buttons.mood-flat .btn-primary:hover {
+            background-color: #8fa074;
+            box-shadow: 0 8px 16px rgba(168, 184, 147, 0.35);
+        }
+        .action-buttons.mood-flat .btn-secondary {
+            background-color: rgba(168, 184, 147, 0.15);
+            color: #a8b893;
+        }
+        .action-buttons.mood-flat .btn-secondary:hover {
+            background-color: rgba(168, 184, 147, 0.25);
+        }
+
+        .action-buttons.mood-okay .btn-primary {
+            background-color: #7db3b0;
+        }
+        .action-buttons.mood-okay .btn-primary:hover {
+            background-color: #5a9997;
+            box-shadow: 0 8px 16px rgba(125, 179, 176, 0.35);
+        }
+        .action-buttons.mood-okay .btn-secondary {
+            background-color: rgba(125, 179, 176, 0.15);
+            color: #7db3b0;
+        }
+        .action-buttons.mood-okay .btn-secondary:hover {
+            background-color: rgba(125, 179, 176, 0.25);
+        }
+
+        .action-buttons.mood-motivated .btn-primary {
+            background-color: #d4a574;
+        }
+        .action-buttons.mood-motivated .btn-primary:hover {
+            background-color: #b88f5c;
+            box-shadow: 0 8px 16px rgba(212, 165, 116, 0.35);
+        }
+        .action-buttons.mood-motivated .btn-secondary {
+            background-color: rgba(212, 165, 116, 0.15);
+            color: #d4a574;
+        }
+        .action-buttons.mood-motivated .btn-secondary:hover {
+            background-color: rgba(212, 165, 116, 0.25);
+        }
+
+        /* ============================================
+           COMPLETION MESSAGE
+           ============================================ */
+        .completion-message {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            background: transparent;
+            border-radius: 12px;
+            border: none;
+            margin-bottom: 30px;
+        }
+
+        .completion-message.show {
+            display: block;
+            animation: celebrationPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .completion-message p {
+            font-size: 1.6rem;
+            color: var(--primary);
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           AD PLACEHOLDERS
+           ============================================ */
+        .ad-placeholder {
+            background-color: transparent;
+            border: none;
+            border-radius: 8px;
+            padding: 0;
+            margin: 50px 0 20px 0;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0.4;
+            letter-spacing: 1px;
+        }
+
+        /* ============================================
+           MOOD CHECK-IN
+           ============================================ */
+        .mood-section {
+            text-align: center;
+            margin-bottom: 35px;
+            animation: fadeIn 0.6s ease-out 0.1s backwards;
+        }
+
+        .mood-label {
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+            opacity: 1;
+        }
+
+        .mood-buttons {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mood-btn {
+            padding: 8px 14px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), color 0.15s ease, box-shadow 0.15s ease;
+            color: var(--text-secondary);
+            will-change: transform;
+            animation: moodButtonFade 0.5s ease-out backwards;
+            box-shadow: 0 2px 4px rgba(31, 41, 51, 0.04);
+        }
+
+        .mood-btn:nth-child(1) { animation-delay: 0.05s; }
+        .mood-btn:nth-child(2) { animation-delay: 0.1s; }
+        .mood-btn:nth-child(3) { animation-delay: 0.15s; }
+        .mood-btn:nth-child(4) { animation-delay: 0.2s; }
+        .mood-btn:nth-child(5) { animation-delay: 0.25s; }
+
+        .mood-btn:hover {
+            border-color: currentColor;
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Tired - parasympathetic activation, cool calming colors */
+        .mood-btn[data-mood="tired"] {
+            --color: #8eb8d9;
+        }
+        .mood-btn[data-mood="tired"]:hover {
+            color: #5a8bc4;
+        }
+        .mood-btn[data-mood="tired"].active {
+            background-color: #8eb8d9;
+            color: white;
+            border-color: #8eb8d9;
+        }
+
+        /* Anxious - grounding earth tones for nervous system reset */
+        .mood-btn[data-mood="anxious"] {
+            --color: #b89968;
+        }
+        .mood-btn[data-mood="anxious"]:hover {
+            color: #9d7d52;
+        }
+        .mood-btn[data-mood="anxious"].active {
+            background-color: #b89968;
+            color: white;
+            border-color: #b89968;
+        }
+
+        /* Flat - gentle stimulation, muted warm tones */
+        .mood-btn[data-mood="flat"] {
+            --color: #a8b893;
+        }
+        .mood-btn[data-mood="flat"]:hover {
+            color: #8fa074;
+        }
+        .mood-btn[data-mood="flat"].active {
+            background-color: #a8b893;
+            color: white;
+            border-color: #a8b893;
+        }
+
+        /* Okay - balanced, stable cool-teal */
+        .mood-btn[data-mood="okay"] {
+            --color: #7db3b0;
+        }
+        .mood-btn[data-mood="okay"]:hover {
+            color: #5a9997;
+        }
+        .mood-btn[data-mood="okay"].active {
+            background-color: #7db3b0;
+            color: white;
+            border-color: #7db3b0;
+        }
+
+        /* Motivated - warm, energizing without anxiety */
+        .mood-btn[data-mood="motivated"] {
+            --color: #d4a574;
+        }
+        .mood-btn[data-mood="motivated"]:hover {
+            color: #b88f5c;
+        }
+        .mood-btn[data-mood="motivated"].active {
+            background-color: #d4a574;
+            color: white;
+            border-color: #d4a574;
+        }
+
+        /* ============================================
+           WHY THIS HELPS TOGGLE
+           ============================================ */
+        .why-toggle {
+            margin-top: 18px;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        .why-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            cursor: pointer;
+            padding: 0;
+            font-weight: 400;
+            transition: color 0.25s ease, transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: underline;
+            text-decoration-thickness: 1px;
+            text-underline-offset: 4px;
+            will-change: color, transform;
+        }
+
+        .why-btn:hover {
+            color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .why-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.3s ease, transform 0.3s ease;
+            opacity: 0;
+            transform: translateY(-8px);
+        }
+
+        .why-content.show {
+            max-height: 200px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .why-text {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 12px;
+            font-style: italic;
+            line-height: 1.6;
+        }
+
+        /* ============================================
+           CATEGORY DESCRIPTIONS
+           ============================================ */
+        .category-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-style: italic;
+            opacity: 0.7;
+        }
+
+        /* ============================================
+           ABOUT MODAL
+           ============================================ */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.show {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            margin: 5% auto;
+            padding: 40px 35px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 20px 40px rgba(107, 143, 113, 0.12);
+        }
+
+        .modal-close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--primary);
+        }
+
+        .modal h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .modal p {
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.7;
+            color: var(--text-secondary);
+        }
+
+        /* ============================================
+           ABOUT LINK
+           ============================================ */
+        .about-link {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            transition: color 0.3s ease;
+        }
+
+        .about-link:hover {
+            color: var(--primary);
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .category-btn {
+            padding: 9px 16px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        .category-btn:hover {
+            border-color: var(--border-focus);
+            color: var(--primary);
+            background-color: var(--primary-light);
+        }
+
+        .category-btn:focus {
+            outline: 2px solid var(--border-focus);
+            outline-offset: 2px;
+        }
+
+        .category-btn.active {
+            background-color: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* ============================================
+           FOOTER
+           ============================================ */
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            animation: fadeIn 1s ease-out 0.3s backwards;
+            opacity: 1;
+        }
+
+        footer p {
+            margin-bottom: 10px;
+        }
+
+        footer a {
+            margin: 0 4px;
+        }
+
+        /* ============================================
+           ANIMATIONS
+           ============================================ */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes textReveal {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes moodButtonFade {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes modalSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes celebrationPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(20px);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.1) translateY(-5px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes successPulse {
+            0% {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ============================================
+           RESPONSIVE DESIGN
+           ============================================ */
+        @media (max-width: 768px) {
+            .header {
+                margin-bottom: 40px;
+            }
+
+            .header h1 {
+                font-size: 2.2rem;
+            }
+
+            .header p {
+                font-size: 0.9rem;
+            }
+
+            .quote {
+                font-size: 1rem;
+                margin-top: 14px;
+            }
+
+            .action-section {
+                padding: 45px 30px;
+                margin-bottom: 35px;
+            }
+
+            .action-text {
+                font-size: 1.6rem;
+                margin-bottom: 35px;
+                line-height: 1.6;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                padding: 12px 22px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .header p {
+                font-size: 0.85rem;
+            }
+
+            .quote {
+                font-size: 0.95rem;
+                margin-top: 12px;
+            }
+
+            .action-section {
+                padding: 35px 20px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+            }
+
+            .action-text {
+                font-size: 1.35rem;
+                margin-bottom: 25px;
+            }
+
+            .action-category {
+                font-size: 0.75rem;
+                padding: 5px 12px;
+            }
+
+            button {
+                padding: 11px 20px;
+                font-size: 0.9rem;
+            }
+
+            .category-btn {
+                padding: 8px 14px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .container {
+                max-width: 720px;
+            }
+
+            .action-section {
+                padding: 70px 55px;
+            }
+
+            .action-text {
+                font-size: 2.2rem;
+                margin-bottom: 45px;
+            }
+
+            button {
+                padding: 14px 30px;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* ============================================
+           DARK MODE SUPPORT
+           ============================================ */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --text-primary: #F0F2F5;
+                --text-secondary: #D1D5DB;
+                --text-tertiary: #9CA3AF;
+                --bg-base: #111827;
+                --bg-soft: #1F2937;
+                --bg-card: #2D3748;
+                --border: #374151;
+                --border-focus: #6B8F71;
+                --primary-light: #1E4D2B;
+                --primary-very-light: #111827;
+            }
+
+            body {
+                background-color: var(--bg-base);
+            }
+
+            .action-section {
+                background-color: var(--bg-card);
+            }
+
+            .modal-content {
+                background-color: var(--bg-card);
+            }
+
+            .ad-placeholder {
+                background-color: transparent;
+                border-color: var(--border);
+            }
+
+            footer {
+                border-top-color: var(--border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with site title and philosophy -->
+    <div class="header">
+        <h1>Tiny Wins Daily</h1>
+        <p class="quote">"Small wins reshape everything."</p>
+        <p id="greeting">A gentle space for feeling calmer and slightly better today.</p>
+    </div>
+
+    <!-- Quiet return acknowledgement message -->
+    <div class="welcome-message" id="welcomeMessage" aria-live="polite" aria-label="Return welcome message"></div>
+
+    <!-- Main container -->
+    <div class="container">
+        <!-- Mood selector (always visible, no description) -->
+        <div class="mood-section">
+            <div class="mood-label">How are you feeling?</div>
+            <div class="mood-buttons">
+                <button class="mood-btn active" data-mood="tired">Tired</button>
+                <button class="mood-btn" data-mood="anxious">Anxious</button>
+                <button class="mood-btn" data-mood="flat">Flat</button>
+                <button class="mood-btn" data-mood="okay">Okay</button>
+                <button class="mood-btn" data-mood="motivated">Motivated</button>
+            </div>
+        </div>
+
+        <!-- Completion message (shown when action is marked done) -->
+        <div class="completion-message">
+            <p>Done is enough.</p>
+        </div>
+
+        <!-- Today's Action section -->
+        <div class="action-section">
+            <div class="section-label">Just for you</div>
+            <div class="action-mood" id="actionMood">tired</div>
+            <div class="action-text" id="actionText">Loading today's action...</div>
+
+            <div class="action-buttons">
+                <button class="btn-primary" id="doneBtn">I Did This</button>
+                <button class="btn-secondary" id="skipBtn">Show Another</button>
+            </div>
+        </div>
+
+        <!-- Why this helps toggle (separated from action box) -->
+        <div class="why-toggle">
+            <button class="why-btn" id="whyBtn">Why this helps</button>
+            <div class="why-content" id="whyContent">
+                <p class="why-text" id="whyText"></p>
+            </div>
+        </div>
+
+        <!-- Subtle ad placeholder -->
+        <div class="ad-placeholder">
+            [Supported by wellness partners]
+        </div>
+    </div>
+
+    <!-- Footer with site philosophy -->
+    <footer>
+        <p>This site is built to be honest, gentle, and human. <button class="about-link" id="aboutBtn">Learn more.</button></p>
+        <p style="font-size: 0.7rem; margin-top: 12px;">Today's space is quietly supported by partners who believe in real wellness.</p>
+    </footer>
+
+    <!-- About Modal -->
+    <div id="aboutModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <h2>About Tiny Wins Daily</h2>
+            <p><strong>This site doesn't track you.</strong> No analytics, no cookies, no data collection. What you do here stays here.</p>
+            <p><strong>It doesn't judge you.</strong> Every action counts. Some days you'll do one. Some days you'll skip it. Both are okay.</p>
+            <p><strong>It doesn't care if you miss a day.</strong> There are no streaks. No guilt. No "you were on a 5-day streak and broke it." Come back when you need to.</p>
+            <p><strong>Your worth isn't measured by this site.</strong> You are enough without doing anything at all.</p>
+            <p style="margin-top: 25px; font-style: italic; opacity: 0.7;">This is a quiet space for you. Use it gently. Use it when it helps. That's all it's here for.</p>
+        </div>
+    </div>
+
+    <!-- ================================================
+         JAVASCRIPT: ACTIONS DATABASE & INTERACTIONS
+         ================================================ -->
+    <script>
+        // Action database - three categories of gentle, meaningful actions
+        const ACTIONS = {
+            tired: [
+                { text: "You don't need to be productive right now. Rest is the action.", why: "Fatigue is a signal, not a flaw. Honoring it prevents burnout." },
+                { text: "Give yourself permission to do less today. That's enough.", why: "Pushing through exhaustion creates shame. Permission creates safety." },
+                { text: "Drink something warm and sit with nothing to do for 10 minutes.", why: "Your nervous system needs parasympathetic activation. Stillness provides it." },
+                { text: "Write: 'My body is asking for rest. I'm listening.'", why: "Self-awareness without shame is the first step to honoring your needs." },
+                { text: "Do one small thing that feels easy. That's a win.", why: "Momentum comes from gentleness, not force." },
+                { text: "Put your phone down and look at something living—a plant, outside, anything green.", why: "Nature regulates the nervous system faster than rest alone." },
+                { text: "Ask yourself: What's the bare minimum I need to feel okay today?", why: "Lowering expectations reduces the guilt of being tired." },
+                { text: "Stretch slowly. This is care, not exercise.", why: "Gentle movement releases tension without demanding energy." },
+                { text: "Tell yourself: 'Tired doesn't mean broken. It means I'm human.'", why: "Normalizing fatigue removes the shame layer that makes it worse." },
+                { text: "Sleep earlier if you can. Your future self will be grateful.", why: "Prevention is gentler than forcing yourself through the next day." }
+            ],
+            anxious: [
+                { text: "Name three things you can see, touch, and hear right now.", why: "This sensory grounding technique pulls you out of future-thinking and into presence." },
+                { text: "Take one slow breath—in for 4, hold for 4, out for 6. Do this 3 times.", why: "Extended exhale activates the vagus nerve, the brain's off-switch for anxiety." },
+                { text: "Ask: What can I control right now? Focus only on that.", why: "Anxiety spirals on uncertainty. Control reduces the threat-response." },
+                { text: "Write down the worry. Then ask: What would I tell a friend in this?", why: "Externalizing anxiety makes it easier to challenge. Perspective softens it." },
+                { text: "Do something with your hands—wash them, hold something cold, clench and release.", why: "Physical grounding interrupts the anxiety loop in your nervous system." },
+                { text: "Move your body for just 2 minutes. Walk, stretch, shake it out.", why: "Movement metabolizes the stress hormones flooding your system." },
+                { text: "Call or text someone you trust. Don't explain—just connect.", why: "Co-regulation (feeling safe with another) is the quickest anxiety reset." },
+                { text: "Identify one small thing you're NOT worried about. Let yourself feel that.", why: "Relief exists even in anxiety. Finding it creates a mental foothold." },
+                { text: "Ask yourself: Is this happening right now? If not, it's not real yet.", why: "Anxiety lives in the future. Grounding in now reduces its power." },
+                { text: "Do something boring on purpose—count tiles, watch water, breathe.", why: "Boredom is the opposite of anxiety. Let it calm your system." }
+            ],
+            flat: [
+                { text: "Engage one sense strongly—play music, taste chocolate, feel cold water.", why: "Flatness is emotional numbness. Sensory activation wakes up your nervous system." },
+                { text: "Do something small that's slightly different from your routine.", why: "Novelty creates tiny dopamine hits. Flatness feeds on sameness." },
+                { text: "Go outside, even for 2 minutes. Light and movement shift your chemistry.", why: "Circadian rhythm dysregulation contributes to flatness. Sunlight resets it." },
+                { text: "Listen to a song that used to move you. Let yourself feel whatever comes.", why: "Music can access emotions when nothing else can. Let it bypass the numbness." },
+                { text: "Do one thing you enjoy, even if you don't feel like it. Start, then notice what happens.", why: "Flatness is part depression. Action activates mood, not the other way around." },
+                { text: "Text someone and say something real, not just 'I'm fine.'", why: "Connection and authenticity are antidotes to flatness." },
+                { text: "Eat something with strong flavor. Notice it fully.", why: "Taste and smell engage the limbic system, bypassing emotional numbness." },
+                { text: "Watch something that makes you laugh or feel—yes, escape counts.", why: "Sometimes you need to be moved from the outside in. That's not weakness." },
+                { text: "Move your body in a way that feels good—dance, walk, anything rhythmic.", why: "Rhythm and movement rebuild the mind-body connection flatness disconnects." },
+                { text: "Write three things that exist in your life that are okay. Just okay.", why: "Flatness convinces you nothing matters. Evidence against this helps." }
+            ],
+            okay: [
+                { text: "Check in with yourself: What do I need right now to stay okay?", why: "Okay is fragile. Knowing what protects it keeps you stable." },
+                { text: "Do one thing aligned with your values today.", why: "Meaning compounds. Small aligned actions build a sense of purpose." },
+                { text: "Reach out to someone you care about. Not about anything—just connection.", why: "Relationships are the strongest buffer against decline." },
+                { text: "Reflect: What has helped me stay okay before? Can I do one of those things?", why: "You have evidence of what works for you. Use it." },
+                { text: "Set a boundary or say no to something that doesn't serve you.", why: "Protecting your okay-ness now prevents crisis later." },
+                { text: "Notice something about your day that's actually working.", why: "Gratitude isn't toxic positivity—it's noticing what's supporting you." },
+                { text: "Spend time with someone or something that feels easy and safe.", why: "Okay thrives in safety. Protect that environment." },
+                { text: "Do something small that sets you up for tomorrow to be okay too.", why: "Okay spreads when you protect the conditions that created it." },
+                { text: "Write: 'I'm okay. I want to stay okay. Here's how.'", why: "Intention matters. Naming it makes it real." },
+                { text: "Give yourself credit for being okay. It's not small.", why: "Okay is an achievement. Let yourself own it." }
+            ],
+            motivated: [
+                { text: "Channel this energy into one thing that matters to you. Not everything—one thing.", why: "Motivation without direction scatters. Focus multiplies its impact." },
+                { text: "Do something you've been avoiding because it felt too big. You can do it now.", why: "This is your window. Use it for what matters, not just what's urgent." },
+                { text: "Break a big goal into three small steps. Do the first one today.", why: "Action on what matters compounds. Small steps become momentum." },
+                { text: "Tell someone what you're working toward. Share the momentum.", why: "Speaking goals aloud increases follow-through and accountability." },
+                { text: "Write down what you want to create or become. Make it real on paper.", why: "Clarity multiplies motivation. Vagueness dilutes it." },
+                { text: "Create space for this momentum. Remove friction. Clear what's in the way.", why: "Motivated states are brief. Protect them by removing obstacles." },
+                { text: "Do something hard while you feel capable. Build on this foundation.", why: "Motivation is power. Use it for growth, not just checking boxes." },
+                { text: "Check in tomorrow. Is this sustainable? Or am I burning out?", why: "Motivation can mask unhealthy urgency. Protect yourself." },
+                { text: "Thank yourself for this momentum. Write down what triggered it.", why: "You want to remember how you created this. It's repeatable." },
+                { text: "Set an intention: What kind of person do I want to be while motivated?", why: "Motivation is an opportunity to build identity, not just outcomes." }
+            ]
+        };
+
+        // Local storage keys
+        const STORAGE_KEY = "tinyWinsDaily_completions";
+        const CURRENT_ACTION_KEY = "tinyWinsDaily_currentAction";
+
+        // Completion messages - randomized reflective lines
+        const COMPLETION_MESSAGES = [
+            "You showed up for yourself.",
+            "That counted.",
+            "Small actions still matter.",
+            "You didn't ignore yourself today.",
+            "This is enough.",
+            "You did something kind today—for you.",
+            "You were gentle with yourself.",
+            "That takes courage.",
+            "You're learning to listen to yourself.",
+            "That's growth."
+        ];
+
+        // Return acknowledgement messages
+        const RETURN_MESSAGES = [
+            "Good to see you again.",
+            "Welcome back. No catching up needed."
+        ];
+
+        // Local storage key for return acknowledgement
+        const RETURN_TIMESTAMP_KEY = "tinyWinsDaily_lastVisit";
+
+        // State variables
+        let currentCategory = "all";
+        let currentAction = null;
+        let currentActionCategory = null;
+        let currentMood = "tired";
+        let isActionProcessing = false; // Debounce flag
+
+        // Touch/swipe tracking
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let touchStartTime = 0;
+
+        // DOM elements - declared but not initialized yet
+        let actionText;
+        let actionMood;
+        let doneBtn;
+        let skipBtn;
+        let completionMessage;
+        let moodBtns;
+        let whyBtn;
+        let whyContent;
+        let whyText;
+        let aboutBtn;
+        let aboutModal;
+        let closeModal;
+        let actionSection;
+
+        // Initialize on page load
+        window.addEventListener("DOMContentLoaded", () => {
+            // Cache DOM elements FIRST, before using them
+            actionText = document.getElementById("actionText");
+            actionMood = document.getElementById("actionMood");
+            doneBtn = document.getElementById("doneBtn");
+            skipBtn = document.getElementById("skipBtn");
+            completionMessage = document.querySelector(".completion-message");
+            moodBtns = document.querySelectorAll(".mood-btn");
+            whyBtn = document.getElementById("whyBtn");
+            whyContent = document.getElementById("whyContent");
+            whyText = document.getElementById("whyText");
+            aboutBtn = document.getElementById("aboutBtn");
+            aboutModal = document.getElementById("aboutModal");
+            closeModal = document.getElementById("closeModal");
+            actionSection = document.querySelector(".action-section");
+
+            // NOW restore saved mood preference
+            const savedMood = localStorage.getItem("tinyWinsDaily_mood");
+            if (savedMood && ACTIONS[savedMood]) {
+                currentMood = savedMood;
+                // Set the button as active
+                moodBtns.forEach(btn => {
+                    if (btn.dataset.mood === currentMood) {
+                        btn.classList.add("active");
+                    } else {
+                        btn.classList.remove("active");
+                    }
+                });
+            } else {
+                // Default to tired, mark it active
+                moodBtns.forEach(btn => {
+                    if (btn.dataset.mood === "tired") {
+                        btn.classList.add("active");
+                    }
+                });
+            }
+
+            // Initialize the app
+            setTimeBasedGreeting();
+            showReturnAcknowledgement();
+            loadAction();
+            attachEventListeners();
+        });
+
+        // Attach event listeners to buttons
+        function attachEventListeners() {
+            doneBtn.addEventListener("click", markAsDone);
+            skipBtn.addEventListener("click", loadAction);
+            whyBtn.addEventListener("click", toggleWhy);
+            aboutBtn.addEventListener("click", () => aboutModal.classList.add("show"));
+            closeModal.addEventListener("click", () => aboutModal.classList.remove("show"));
+            aboutModal.addEventListener("click", (e) => {
+                if (e.target === aboutModal) {
+                    aboutModal.classList.remove("show");
+                }
+            });
+
+            // Swipe gesture support for mobile
+            actionSection.addEventListener("touchstart", handleSwipeStart, { passive: true });
+            actionSection.addEventListener("touchend", handleSwipeEnd, { passive: true });
+
+            moodBtns.forEach(btn => {
+                btn.addEventListener("click", (e) => {
+                    moodBtns.forEach(b => b.classList.remove("active"));
+                    e.target.classList.add("active");
+                    currentMood = e.target.dataset.mood;
+                    // Save mood preference
+                    localStorage.setItem("tinyWinsDaily_mood", currentMood);
+                    loadAction();
+                });
+            });
+        }
+
+        // Load a random action based on current category filter and mood
+        function loadAction() {
+            if (isActionProcessing) return; // Prevent rapid concurrent actions
+            isActionProcessing = true;
+
+            if (!ACTIONS[currentMood]) {
+                currentMood = "tired";
+            }
+
+            const availableActions = ACTIONS[currentMood];
+
+            // Pick a random action
+            const randomIndex = Math.floor(Math.random() * availableActions.length);
+            const actionObj = availableActions[randomIndex];
+            currentAction = actionObj.text;
+            const currentWhy = actionObj.why;
+
+            currentActionCategory = currentMood;
+
+            // Update UI
+            actionText.textContent = currentAction;
+            actionMood.textContent = currentMood;
+            whyText.textContent = currentWhy;
+            whyContent.classList.remove("show");
+
+            // Update action section color based on mood
+            actionSection.className = `action-section mood-${currentMood}`;
+
+            // Update action buttons color based on mood
+            const actionButtons = document.querySelector(".action-buttons");
+            actionButtons.className = `action-buttons mood-${currentMood}`;
+
+            // Hide completion message when loading new action
+            completionMessage.classList.remove("show");
+
+            // Save current action to localStorage
+            saveCurrentAction();
+
+            // Re-enable action processing after animation
+            isActionProcessing = false;
+        }
+
+        // Mark action as done
+        function markAsDone() {
+            if (isActionProcessing) return; // Prevent rapid concurrent actions
+            isActionProcessing = true;
+
+            // Show the completion message with randomized text
+            const randomMessage = COMPLETION_MESSAGES[Math.floor(Math.random() * COMPLETION_MESSAGES.length)];
+            document.querySelector(".completion-message p").textContent = randomMessage;
+            completionMessage.classList.add("show");
+
+            // Save completion to localStorage
+            const completions = getCompletions();
+            const today = new Date().toISOString().split("T")[0];
+
+            if (!completions[today]) {
+                completions[today] = [];
+            }
+
+            completions[today].push({
+                action: currentAction,
+                category: currentActionCategory,
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(completions));
+
+            // After a brief moment, load the next action
+            setTimeout(() => {
+                loadAction();
+                isActionProcessing = false;
+            }, 2500);
+        }
+
+        // Get completions from localStorage
+        function getCompletions() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : {};
+        }
+
+        // Save current action
+        function saveCurrentAction() {
+            const data = {
+                action: currentAction,
+                category: currentActionCategory,
+                loadedAt: new Date().toISOString()
+            };
+            localStorage.setItem(CURRENT_ACTION_KEY, JSON.stringify(data));
+        }
+
+        // Optional: Resume from saved action on page reload
+        function resumeFromSaved() {
+            const saved = localStorage.getItem(CURRENT_ACTION_KEY);
+            if (saved) {
+                const data = JSON.parse(saved);
+                const timeDiff = Date.now() - new Date(data.loadedAt).getTime();
+                // Only resume if the action was saved within the last hour
+                if (timeDiff < 3600000) {
+                    currentAction = data.action;
+                    currentActionCategory = data.category;
+                    actionText.textContent = currentAction;
+                    categoryBadge.textContent = currentActionCategory;
+                    categoryBadge.className = `action-category ${currentActionCategory}`;
+                    return;
+                }
+            }
+            // Otherwise load a fresh action
+            loadAction();
+        }
+
+        // Set time-based greeting
+        function setTimeBasedGreeting() {
+            const hour = new Date().getHours();
+            const greetingEl = document.getElementById("greeting");
+            let greeting = "A gentle space for feeling calmer and slightly better today.";
+
+            if (hour < 9) {
+                greeting = "Good morning. Start soft.";
+            } else if (hour < 12) {
+                greeting = "Good morning. Here's something for you right now.";
+            } else if (hour < 14) {
+                greeting = "Good afternoon. Take a gentle break.";
+            } else if (hour < 17) {
+                greeting = "Mid-afternoon. Let's pause together.";
+            } else if (hour < 19) {
+                greeting = "Good evening. Ease into your wind-down.";
+            } else if (hour < 21) {
+                greeting = "Evening. Time to be kinder to yourself.";
+            } else {
+                greeting = "It's late. Be gentle with yourself tonight.";
+            }
+
+            greetingEl.textContent = greeting;
+        }
+
+        // Toggle "Why this helps" section
+        function toggleWhy() {
+            whyContent.classList.toggle("show");
+            whyBtn.textContent = whyContent.classList.contains("show") ? "Hide" : "Why this helps";
+        }
+
+        // Show return acknowledgement if user has visited before
+        function showReturnAcknowledgement() {
+            const welcomeEl = document.getElementById("welcomeMessage");
+            const lastVisitTimestamp = localStorage.getItem(RETURN_TIMESTAMP_KEY);
+
+            // If user has visited before, show a random welcome message
+            if (lastVisitTimestamp) {
+                const randomMessage = RETURN_MESSAGES[Math.floor(Math.random() * RETURN_MESSAGES.length)];
+                welcomeEl.textContent = randomMessage;
+                welcomeEl.classList.add("show");
+            }
+
+            // Update timestamp for this visit (store it after showing message)
+            localStorage.setItem(RETURN_TIMESTAMP_KEY, new Date().toISOString());
+        }
+
+        // Swipe gesture handlers for mobile
+        function handleSwipeStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartTime = Date.now();
+        }
+
+        function handleSwipeEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            const swipeDuration = Date.now() - touchStartTime;
+            const swipeDistance = touchStartX - touchEndX;
+            const minSwipeDistance = 50; // Minimum pixels to register as a swipe
+            const maxDuration = 500; // Maximum milliseconds for a swipe
+
+            // Only register swipe if it's within reasonable time and distance
+            if (Math.abs(swipeDistance) > minSwipeDistance && swipeDuration < maxDuration) {
+                if (swipeDistance > 0) {
+                    // Swiped left → Skip (load next action)
+                    loadAction();
+                } else {
+                    // Swiped right → Complete (mark as done)
+                    markAsDone();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
